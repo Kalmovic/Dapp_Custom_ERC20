@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Transfer from "./routes/transfer.tsx";
 import { Root } from "./routes/root.tsx";
 import { Web3Provider } from "./providers/wallet-provider.tsx";
+import { Login } from "./routes/login.tsx";
 
 const router = createBrowserRouter([
   {
@@ -12,13 +13,19 @@ const router = createBrowserRouter([
     element: <Root />,
     children: [
       {
-        path: "",
-        element: <Dashboard />,
+        path: "login",
+        element: <Login />,
         index: true,
       },
       {
-        path: "transfer",
-        element: <Transfer />,
+        path: "dashboard",
+        element: <Dashboard />,
+        children: [
+          {
+            path: "transfer",
+            element: <Transfer />,
+          },
+        ],
       },
     ],
   },

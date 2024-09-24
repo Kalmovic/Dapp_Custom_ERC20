@@ -14,7 +14,7 @@ export default function Transfer() {
         <CardTitle>
           <div className="flex items-center">
             <span>Transfer Token</span>
-            <Link to="/" className="ml-auto text-black hover:text-gray-600">
+            <Link to=".." className="ml-auto text-black hover:text-gray-600">
               Cancel
             </Link>
           </div>

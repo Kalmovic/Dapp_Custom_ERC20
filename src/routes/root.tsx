@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ConnectKitButton } from "connectkit";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAccount } from "wagmi";
 
 export function Root() {
+  const { isConnected } = useAccount();
   return (
     <div className="w-full space-y-4" style={{ margin: "0 auto" }}>
       <div className="w-full p-4 bg-white shadow-md">
@@ -25,6 +27,11 @@ export function Root() {
           </ConnectKitButton.Custom>
         </div>
       </div>
+      {isConnected ? (
+        <Navigate to="dashboard" replace={true} />
+      ) : (
+        <Navigate to="login" replace={true} />
+      )}
       <Outlet />
     </div>
   );
