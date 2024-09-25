@@ -7,11 +7,38 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAccount } from "wagmi";
-import { ConnectKitButton } from "connectkit";
+import tokenAbi from "@/abis/bitso-token-abi.json";
+import { BITSO_TOKEN_ADDRESS } from "@/constants/addresses";
+import { useAccount, useReadContract } from "wagmi";
+import { Suspense } from "react";
+import { formatBigInt } from "@/utils/formatBigInt";
+import { TextShimmer } from "@/components/text-shimmer";
+import { BigNumberish } from "ethers";
+
+function Loader() {
+  return (
+    <div className="flex flex-row justify-end">
+      <TextShimmer width="80px" />
+    </div>
+  );
+}
 
 function Dashboard() {
   const { address, isDisconnected } = useAccount();
+  const {
+    data: balance,
+    isLoading,
+  }: {
+    data: undefined | BigNumberish;
+    isLoading: boolean;
+    isError: boolean;
+    error: Error | null;
+  } = useReadContract({
+    address: BITSO_TOKEN_ADDRESS,
+    abi: tokenAbi,
+    functionName: "balanceOf",
+    args: [address],
+  });
 
   return (
     <div className="w-full max-w-md p-4 space-y-4" style={{ margin: "0 auto" }}>
@@ -26,14 +53,21 @@ function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">
-              1000 <span className="text-base">BIT</span>
-            </p>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <Suspense fallback={<Loader />}>
+                <div className="flex flex-row justify-end align-center items-baseline">
+                  <p className="text-2xl font-bold">
+                    {balance ? formatBigInt(balance, 0) : "0"}{" "}
+                  </p>
+                  <p className="text-base font-bold ml-1">BIT</p>
+                </div>
+              </Suspense>
+            )}
           </CardContent>
         </Card>
       )}
-      {/* transfer button at the right */}
-
       <Link to="transfer" className="w-full flex justify-end">
         <Button
           variant="outline"
