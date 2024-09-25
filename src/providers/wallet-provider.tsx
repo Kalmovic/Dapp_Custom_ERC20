@@ -15,7 +15,7 @@ const config = createConfig(
     chains: [sepolia],
     transports: {
       // RPC URL for each chain
-      [sepolia.id]: http("https://sepolia.rpc.url"),
+      [sepolia.id]: http("https://eth-sepolia.g.alchemy.com/v2/demo"),
     },
 
     // Required API Keys
