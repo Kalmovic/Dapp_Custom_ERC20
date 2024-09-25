@@ -1,4 +1,4 @@
-import { Link, Navigate, Outlet, redirect } from "react-router-dom";
+import { Link, Navigate, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
