@@ -87,7 +87,10 @@ export function TransferConfirm({
 
       await writeContract(config, txRequest);
 
-      setFormStatus("success");
+      setTimeout(() => {
+        setFormStatus("success");
+        onNext();
+      }, 2000);
     } catch (error) {
       console.error(error);
       toast("Transaction incomplete.", {
