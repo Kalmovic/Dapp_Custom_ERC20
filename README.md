@@ -34,8 +34,8 @@ Crypto Challenge is a decentralized application (dApp) that allows users to view
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/Kalmovic/crypto-challenge.git
-   cd crypto-challenge
+   git clone https://github.com/Kalmovic/Dapp_Custom_ERC20.git
+   cd Dapp_Custom_ERC20
    ```
 
 2. **Install Dependencies**
