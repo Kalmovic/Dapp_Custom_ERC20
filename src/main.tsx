@@ -7,6 +7,8 @@ import { Web3Provider } from "./providers/wallet-provider.tsx";
 import { Login } from "./routes/login.tsx";
 import { ErrorBoundary } from "./components/error-boundary.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
+import { PrivateRoute } from "./routes/private-route.tsx";
+import { TokenProvider } from "./context/token-context.tsx";
 
 const router = createBrowserRouter([
   {
@@ -18,12 +20,17 @@ const router = createBrowserRouter([
         path: "login",
         element: <Login />,
         errorElement: <ErrorBoundary />,
-        index: true,
       },
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: <PrivateRoute />,
         errorElement: <ErrorBoundary />,
+        children: [
+          {
+            path: "",
+            element: <Dashboard />,
+          },
+        ],
       },
     ],
   },
@@ -31,7 +38,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Web3Provider>
-    <RouterProvider router={router} />
-    <Toaster />
+    <TokenProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </TokenProvider>
   </Web3Provider>
 );
