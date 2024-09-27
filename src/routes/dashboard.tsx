@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAccount, useReadContracts } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatBigInt } from "@/utils/formatBigInt";
@@ -15,33 +15,38 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TextShimmer } from "@/components/text-shimmer";
+import { useTokenContext } from "@/context/token-context";
+import { useQueryClient } from "@tanstack/react-query";
 
 function Dashboard() {
+  const queryClient = useQueryClient();
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const { address, isDisconnected } = useAccount();
-  const result = useReadContracts({
-    allowFailure: true,
-    contracts: [
-      {
-        address: BITSO_TOKEN_ADDRESS,
-        abi: tokenAbi,
-        functionName: "balanceOf",
-        args: [address],
-      },
-      {
-        address: BITSO_TOKEN_ADDRESS,
-        abi: tokenAbi,
-        functionName: "symbol",
-      },
-    ],
+  const { tokenSymbol } = useTokenContext();
+  const {
+    data: balance,
+    queryKey,
+    isSuccess,
+    isLoading,
+  } = useReadContract({
+    address: BITSO_TOKEN_ADDRESS,
+    abi: tokenAbi,
+    functionName: "balanceOf",
+    args: [address],
   });
 
-  const balance = result?.data?.[0]?.result as bigint;
-
-  const token = result?.data?.[1]?.result as string;
+  const handleClose = async () => {
+    // Invalidate the balance query to refetch the new balance
+    await queryClient.invalidateQueries({
+      queryKey,
+    });
+    setIsTransferOpen(false);
+  };
 
   const formattedBalance =
-    result.isSuccess && !!balance ? formatBigInt(balance, 0) : "0";
+    isSuccess && !!balance && typeof balance == "bigint"
+      ? formatBigInt(balance, 18)
+      : "0";
 
   return (
     <div className="w-full max-w-md p-4 space-y-4 mx-auto">
@@ -56,7 +61,7 @@ function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {result.isLoading ? (
+            {isLoading ? (
               <div className="flex justify-end">
                 <TextShimmer width="80px" />
               </div>
@@ -64,7 +69,7 @@ function Dashboard() {
               <div className="flex justify-end items-baseline">
                 <p className="text-2xl font-bold">{formattedBalance}</p>
                 <p className="text-base font-bold ml-1">
-                  {token ?? <TextShimmer width="40px" />}
+                  {tokenSymbol ?? <TextShimmer width="40px" />}
                 </p>
               </div>
             )}
@@ -96,7 +101,7 @@ function Dashboard() {
               exit={{ opacity: 0, y: -20 }}
               className="relative bottom-0"
             >
-              <TransferWizard onClose={() => setIsTransferOpen(false)} />
+              <TransferWizard onClose={handleClose} />
             </motion.div>
           )}
         </AnimatePresence>
