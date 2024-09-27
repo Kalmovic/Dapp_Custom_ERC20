@@ -9,6 +9,7 @@ import { ErrorBoundary } from "./components/error-boundary.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import { PrivateRoute } from "./routes/private-route.tsx";
 import { TokenProvider } from "./context/token-context.tsx";
+import { TooltipProvider } from "./components/ui/tooltip.tsx";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Web3Provider>
     <TokenProvider>
-      <RouterProvider router={router} />
+      <TooltipProvider>
+        <RouterProvider router={router} />
+      </TooltipProvider>
       <Toaster />
     </TokenProvider>
   </Web3Provider>

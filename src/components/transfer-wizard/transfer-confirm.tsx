@@ -9,7 +9,7 @@ import { config } from "@/providers/wallet-provider";
 import { AnimatePresence, motion } from "framer-motion";
 import tokenAbi from "@/abis/bitso-token-abi.json";
 import { toast } from "sonner";
-import { Info, Loader } from "lucide-react";
+import { Info, Loader, LoaderCircle } from "lucide-react";
 import {
   CardContent,
   CardDescription,
@@ -19,6 +19,7 @@ import {
 import { Button } from "../ui/button";
 import { useTokenContext } from "@/context/token-context";
 import { TextShimmer } from "../text-shimmer";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 interface TransferConfirmProps {
   data: {
@@ -132,15 +133,24 @@ export function TransferConfirm({
             <span className="text-sm font-medium leading-none">
               Estimated Gas Fee:
             </span>
-            <Suspense
-              fallback={<TextShimmer width="80px" className="text-sm" />}
-            >
-              <span className="px-1 py-0.5 text-sm font-medium leading-none">
-                {formattedEstimatedGasFee
-                  ? `${formattedEstimatedGasFee} ETH`
-                  : ""}
-              </span>
-            </Suspense>
+            {formattedEstimatedGasFee ? (
+              <div className="flex justify-center space-x-1 items-center">
+                <span className="px-1 py-0.5 text-sm font-medium flex justify-center space-x-2 align-middle">
+                  ${formattedEstimatedGasFee} ETH
+                </span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <LoaderCircle
+                      size={12}
+                      className="animate-spin stroke-slate-300"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>Updating gas fee...</TooltipContent>
+                </Tooltip>
+              </div>
+            ) : (
+              <TextShimmer width="114px" className="px-1 py-0.5 text-sm" />
+            )}
           </p>
         </div>
         <div className="flex justify-end space-x-2 mt-4">
