@@ -2,6 +2,10 @@
 
 Crypto Challenge is a decentralized application (dApp) that allows users to view their Bitso Token (BIT) balance and transfer tokens securely on the Ethereum blockchain. The app is built with React, TypeScript, and Vite, and integrates with Ethereum wallets using ConnectKit and Wagmi. It features a responsive design, real-time token balance updates, gas fee estimation, and toast notifications for transaction statuses.
 
+## Media
+
+https://github.com/user-attachments/assets/2c245718-28e7-4bd4-852f-e2827d969127
+
 ## Features
 
 - **Wallet Integration**: Connect your wallet using MetaMask or other compatible wallets.
@@ -86,8 +90,4 @@ Crypto Challenge is a decentralized application (dApp) that allows users to view
 You can use the following Bitso Token (BIT) address for testing purposes on the Sepolia testnet:
 
 https://sepolia.etherscan.io/token/0x02fBb95A90f2Ba4F0CFb4B9828f3379cd868295A
-
-## Media
-
-https://github.com/user-attachments/assets/2c245718-28e7-4bd4-852f-e2827d969127
 
