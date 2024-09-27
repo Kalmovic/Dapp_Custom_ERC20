@@ -15,10 +15,10 @@ export function Root() {
               return (
                 <Button
                   onClick={show}
-                  variant="secondary"
-                  className="ml-auto px-4 py-2 rounded-lg text-black"
+                  variant={!!isConnected && !!address ? "outline" : "default"}
+                  className="ml-auto px-4 py-2 rounded-lg"
                 >
-                  {isConnected && address
+                  {!!isConnected && !!address
                     ? address.slice(0, 6) + "..." + address.slice(-4)
                     : "Connect Wallet"}
                 </Button>
