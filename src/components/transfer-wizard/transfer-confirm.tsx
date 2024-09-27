@@ -1,13 +1,8 @@
 import React from "react";
-import {
-  estimateGas,
-  getAccount,
-  simulateContract,
-  writeContract,
-} from "@wagmi/core";
+import { getAccount, simulateContract, writeContract } from "@wagmi/core";
 import { ethers } from "ethers";
 import { sepolia } from "viem/chains";
-import { encodeFunctionData, parseGwei } from "viem";
+import { parseGwei } from "viem";
 import { useEstimateGas } from "wagmi";
 import { BITSO_TOKEN_ADDRESS } from "@/constants/addresses";
 import { config } from "@/providers/wallet-provider";
@@ -15,13 +10,19 @@ import { AnimatePresence, motion } from "framer-motion";
 import tokenAbi from "@/abis/bitso-token-abi.json";
 import { toast } from "sonner";
 import { Info, Loader } from "lucide-react";
-import { CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { Button } from "../ui/button";
+import { useTokenContext } from "@/context/token-context";
 
 interface TransferConfirmProps {
   data: {
     recipient: string;
-    amount: number;
+    amount: string;
   };
   onBack: () => void;
   onNext: () => void;
@@ -37,19 +38,20 @@ export function TransferConfirm({
   const [formStatus, setFormStatus] = React.useState<
     "idle" | "loading" | "success"
   >("idle");
+
+  const { tokenSymbol } = useTokenContext();
+
   const test = useEstimateGas({
     to: BITSO_TOKEN_ADDRESS,
     value: ethers.parseEther(data.amount.toString()),
     gas: parseGwei("20"),
   });
 
-  console.log(test);
-
   const handleConfirm = async () => {
     setFormStatus("loading");
     try {
       const { address } = getAccount(config);
-      const parsedAmount = ethers.parseUnits(data.amount.toString(), 0);
+      const parsedAmount = ethers.parseUnits(data.amount, 18);
 
       const { request: txRequest } = await simulateContract(config, {
         address: BITSO_TOKEN_ADDRESS,
@@ -60,17 +62,6 @@ export function TransferConfirm({
         chainId: sepolia.id,
       });
 
-      const test = estimateGas(config, {
-        to: BITSO_TOKEN_ADDRESS,
-        data: encodeFunctionData({
-          abi: tokenAbi,
-          functionName: "transfer",
-          args: [data.recipient, ethers.parseEther(data.amount.toString())],
-        }),
-      });
-
-      console.log(test);
-
       await writeContract(config, txRequest);
 
       setFormStatus("success");
@@ -78,6 +69,7 @@ export function TransferConfirm({
         onNext();
       }, 3000);
     } catch (error) {
+      console.error(error);
       toast("Transaction incomplete.", {
         description:
           "We couldn't complete the transaction at this time, please try again later.",
@@ -96,31 +88,36 @@ export function TransferConfirm({
         <CardTitle className="flex justify-between items-center">
           Confirm Transfer
         </CardTitle>
+        <CardDescription>
+          Carefully review the details before confirming the transfer.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
+        <div className="space-y-2 p-4 border border-primary-border rounded-lg bg-slate-50">
           <p className="flex items-center space-x-2">
             <span className="text-sm font-medium leading-none">Recipient:</span>
-            <span className="px-1 py-0.5 border border-slate-400 rounded-md text-sm font-medium leading-none">
+            <span className="px-1 py-0.5 text-sm font-medium leading-none">
               {data.recipient.slice(0, 6) + "..." + data.recipient.slice(-4)}
             </span>
           </p>
+          <hr />
           <p className="flex items-center space-x-2">
             <span className="text-sm font-medium leading-none">Amount:</span>
-            <span className="px-1 py-0.5 bg-slate-100 border border-slate-400 rounded-md text-sm font-medium leading-none">
-              {data.amount} BIT
+            <span className="px-1 py-0.5 text-sm font-medium leading-none flex flex-row">
+              {data.amount} {tokenSymbol}
             </span>
           </p>
-          <p>
+          <hr />
+          <p className="flex items-center space-x-2">
             <span className="text-sm font-medium leading-none">
               Estimated Gas Fee:
             </span>
-            <span className="px-1 py-0.5 bg-slate-100 border border-slate-400 rounded-md text-sm font-medium leading-none">
+            <span className="px-1 py-0.5 text-sm font-medium leading-none">
               Estimating...
             </span>
           </p>
         </div>
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-2 mt-4">
           <Button
             variant="outline"
             onClick={onBack}

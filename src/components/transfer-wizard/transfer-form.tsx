@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type TransferFormProps = {
-  data: { recipient?: Address | string; amount?: number };
+  data: { recipient?: Address | string; amount?: string };
   onClose: () => void;
-  onNext: (data: { recipient: string; amount: number }) => void;
+  onNext: (data: { recipient: string; amount: string }) => void;
 };
 
 const schema = Yup.object().shape({
@@ -20,10 +20,13 @@ const schema = Yup.object().shape({
     .test("is-valid-address", "Invalid Ethereum address", (value) =>
       ethers.isAddress(value || "")
     ),
-  amount: Yup.number()
+  amount: Yup.string()
     .required("Amount is required")
-    .positive("Amount must be greater than zero")
-    .typeError("Amount must be a valid number"),
+    .test(
+      "is-positive",
+      "Amount must be a positive number",
+      (value) => !isNaN(Number(value)) && parseFloat(value || "0") > 0
+    ),
 });
 
 export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
@@ -36,12 +39,12 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
     reValidateMode: "onSubmit",
     shouldFocusError: true,
     defaultValues: {
-      amount: data.amount || 0,
+      amount: data.amount || "",
       recipient: data.recipient || "",
     },
   });
 
-  const onSubmit = (data: { recipient: string; amount: number }) => {
+  const onSubmit = (data: { recipient: string; amount: string }) => {
     onNext(data);
   };
 
@@ -71,7 +74,7 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
           <div className="grid gap-1.5">
             <Label htmlFor="amount">Amount</Label>
             <Input
-              type="number"
+              type="text"
               placeholder="0.00"
               {...register("amount")}
               className="bg-primary-foreground"

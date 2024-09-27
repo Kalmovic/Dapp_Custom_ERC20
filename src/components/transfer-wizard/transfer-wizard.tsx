@@ -15,7 +15,7 @@ export enum TransferWizardSteps {
 type FormState = {
   kind: TransferWizardSteps.FORM;
   data: {
-    amount?: number;
+    amount?: string;
     recipient?: string;
   };
 };
@@ -23,7 +23,7 @@ type FormState = {
 type ConfirmState = {
   kind: TransferWizardSteps.CONFIRM;
   data: {
-    amount: number;
+    amount: string;
     recipient: string;
   };
 };
