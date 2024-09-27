@@ -8,7 +8,7 @@ Crypto Challenge is a decentralized application (dApp) that allows users to view
 - **Real-Time Token Balance**: View your current token balance with real-time updates.
 - **Secure Token Transfers**: Transfer tokens effortlessly with a multi-step form that ensures accuracy and security.
 - **Animated UI/UX**: Enjoy smooth transitions and interactive animations powered by Framer Motion.
-- **Responsive Design**: Optimized for both desktop and mobile devices, ensuring a consistent experience across platforms.
+- **Responsive Design**: Optimized for desktop and mobile devices, ensuring a consistent platform experience.
 - **Form Validation**: Robust form validation using React Hook Form and Yup to prevent errors.
 - **Gas Fee Estimation**: Get real-time gas fee estimates before confirming transactions.
 - **Notifications**: Receive instant feedback on transaction statuses with toast notifications.
@@ -86,3 +86,8 @@ Crypto Challenge is a decentralized application (dApp) that allows users to view
 You can use the following Bitso Token (BIT) address for testing purposes on the Sepolia testnet:
 
 https://sepolia.etherscan.io/token/0x02fBb95A90f2Ba4F0CFb4B9828f3379cd868295A
+
+## Media
+
+https://github.com/user-attachments/assets/2c245718-28e7-4bd4-852f-e2827d969127
+
