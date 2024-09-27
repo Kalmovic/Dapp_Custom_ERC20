@@ -89,6 +89,9 @@ export function TransferWizard({ onClose }: { onClose: () => void }) {
         );
       case TransferWizardSteps.SUCCESS:
         return <TransferSuccess onClose={onClose} />;
+      default:
+        const _exhaustiveCheck: never = wizardState;
+        throw new Error("Bad state" + _exhaustiveCheck);
     }
   }, [wizardState.kind]);
 
