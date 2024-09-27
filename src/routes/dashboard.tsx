@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount } from "wagmi";
 import { Navigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { formatBigInt } from "@/utils/formatBigInt";
-import { BITSO_TOKEN_ADDRESS } from "@/constants/addresses";
-import tokenAbi from "@/abis/bitso-token-abi.json";
 import { TransferWizard } from "@/components/transfer-wizard/transfer-wizard";
 import {
   Card,
@@ -17,23 +14,14 @@ import { Button } from "@/components/ui/button";
 import { TextShimmer } from "@/components/text-shimmer";
 import { useTokenContext } from "@/context/token-context";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAccountBalance } from "@/hooks/useAccountBalance";
 
 function Dashboard() {
   const queryClient = useQueryClient();
   const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const { address, isDisconnected } = useAccount();
+  const { isDisconnected } = useAccount();
   const { tokenSymbol } = useTokenContext();
-  const {
-    data: balance,
-    queryKey,
-    isSuccess,
-    isLoading,
-  } = useReadContract({
-    address: BITSO_TOKEN_ADDRESS,
-    abi: tokenAbi,
-    functionName: "balanceOf",
-    args: [address],
-  });
+  const { formattedBalance, isLoading, queryKey } = useAccountBalance();
 
   const handleClose = async () => {
     // Invalidate the balance query to refetch the new balance
@@ -42,11 +30,6 @@ function Dashboard() {
     });
     setIsTransferOpen(false);
   };
-
-  const formattedBalance =
-    isSuccess && !!balance && typeof balance == "bigint"
-      ? formatBigInt(balance, 18)
-      : "0";
 
   return (
     <div className="w-full max-w-md p-4 space-y-4 mx-auto">
@@ -63,7 +46,7 @@ function Dashboard() {
           <CardContent>
             {isLoading ? (
               <div className="flex justify-end">
-                <TextShimmer width="80px" />
+                <TextShimmer width="150px" />
               </div>
             ) : (
               <div className="flex justify-end items-baseline">
