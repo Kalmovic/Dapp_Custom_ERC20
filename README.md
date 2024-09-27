@@ -1,50 +1,88 @@
-# React + TypeScript + Vite
+# Crypto Challenge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Crypto Challenge is a decentralized application (dApp) that allows users to view their Bitso Token (BIT) balance and transfer tokens securely on the Ethereum blockchain. The app is built with React, TypeScript, and Vite, and integrates with Ethereum wallets using ConnectKit and Wagmi. It features a responsive design, real-time token balance updates, gas fee estimation, and toast notifications for transaction statuses.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Wallet Integration**: Connect your wallet using MetaMask or other compatible wallets.
+- **Real-Time Token Balance**: View your current token balance with real-time updates.
+- **Secure Token Transfers**: Transfer tokens effortlessly with a multi-step form that ensures accuracy and security.
+- **Animated UI/UX**: Enjoy smooth transitions and interactive animations powered by Framer Motion.
+- **Responsive Design**: Optimized for both desktop and mobile devices, ensuring a consistent experience across platforms.
+- **Form Validation**: Robust form validation using React Hook Form and Yup to prevent errors.
+- **Gas Fee Estimation**: Get real-time gas fee estimates before confirming transactions.
+- **Notifications**: Receive instant feedback on transaction statuses with toast notifications.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **React**: Frontend library for building user interfaces.
+- **TypeScript**: Typed superset of JavaScript for enhanced developer experience.
+- **Vite**: Fast and modern frontend build tool.
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development.
+- **Framer Motion**: Animation library for React to create smooth transitions.
+- **React Router v6**: Declarative routing for React applications.
+- **ConnectKit**: Library for connecting to Ethereum wallets.
+- **Wagmi**: React Hooks library for Ethereum.
+- **Ethers.js**: Library for interacting with the Ethereum blockchain.
+- **React Hook Form**: Performant, flexible form library for React.
+- **Yup**: JavaScript schema builder for value parsing and validation.
+- **Sonner**: Notification library for React.
+- **Lucide React**: Icon library for React.
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Clone the Repository**
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+   ```bash
+   git clone https://github.com/Kalmovic/crypto-challenge.git
+   cd crypto-challenge
+   ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+2. **Install Dependencies**
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+   ```bash
+    npm install
+   ```
+
+3. **Create Environment Variables**
+
+   Create a `.env` file in the root directory and add the following environment variables:
+
+   ```env
+   VITE_APP_ETHEREUM_NETWORK=sepolia
+   VITE_APP_BITSO_TOKEN_ADDRESS=your_token_address_here
+   ```
+
+4. **Start the Development Server**
+
+   ```bash
+    npm run dev
+   ```
+
+## Usage
+
+1. **Connect Your Wallet**
+
+   Click on the "Connect Wallet" button to connect your MetaMask or other compatible wallet.
+
+2. **View Token Balance**
+
+   After connecting, your current balance of Bitso Tokens (BIT) will be displayed on the dashboard.
+
+3. **Transfer Tokens**
+
+- Click on the "Transfer" button.
+- The button will morph into a transfer form.
+- Step 1: Enter the recipient's Ethereum address and the amount of BIT you wish to transfer.
+- Step 2: Review the transfer details and the estimated gas fee.
+- Step 3: Confirm the transaction. The app will display a loading spinner while processing and notify you upon success or failure.
+
+4. **Disconnect Your Wallet**
+
+   Click on the Wallet button to disconnect your wallet.
+
+## Token Address (Sepolia Testnet)
+
+You can use the following Bitso Token (BIT) address for testing purposes on the Sepolia testnet:
+
+https://sepolia.etherscan.io/token/0x02fBb95A90f2Ba4F0CFb4B9828f3379cd868295A
