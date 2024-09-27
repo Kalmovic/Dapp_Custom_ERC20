@@ -1,9 +1,9 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { getAccount, simulateContract, writeContract } from "@wagmi/core";
 import { ethers } from "ethers";
 import { sepolia } from "viem/chains";
-import { parseGwei } from "viem";
-import { useEstimateGas } from "wagmi";
+import { encodeFunctionData } from "viem";
+import { useEstimateGas, useGasPrice } from "wagmi";
 import { BITSO_TOKEN_ADDRESS } from "@/constants/addresses";
 import { config } from "@/providers/wallet-provider";
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,6 +18,7 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { useTokenContext } from "@/context/token-context";
+import { TextShimmer } from "../text-shimmer";
 
 interface TransferConfirmProps {
   data: {
@@ -41,11 +42,32 @@ export function TransferConfirm({
 
   const { tokenSymbol } = useTokenContext();
 
-  const test = useEstimateGas({
-    to: BITSO_TOKEN_ADDRESS,
-    value: ethers.parseEther(data.amount.toString()),
-    gas: parseGwei("20"),
+  const parsedAmount = ethers.parseUnits(data.amount, 18);
+
+  const dataField = encodeFunctionData({
+    abi: tokenAbi,
+    functionName: "transfer",
+    args: [data.recipient, parsedAmount],
   });
+
+  const estimateGas = useEstimateGas({
+    to: BITSO_TOKEN_ADDRESS,
+    data: dataField,
+    chainId: sepolia.id,
+  });
+
+  const { data: gasPriceData } = useGasPrice({
+    chainId: sepolia.id,
+  });
+
+  const estimatedGasFee =
+    estimateGas.data && gasPriceData
+      ? BigInt(estimateGas.data) * BigInt(gasPriceData)
+      : null;
+
+  const formattedEstimatedGasFee = estimatedGasFee
+    ? ethers.formatEther(estimatedGasFee).slice(0, 8)
+    : null;
 
   const handleConfirm = async () => {
     setFormStatus("loading");
@@ -65,9 +87,6 @@ export function TransferConfirm({
       await writeContract(config, txRequest);
 
       setFormStatus("success");
-      setTimeout(() => {
-        onNext();
-      }, 3000);
     } catch (error) {
       console.error(error);
       toast("Transaction incomplete.", {
@@ -104,7 +123,8 @@ export function TransferConfirm({
           <p className="flex items-center space-x-2">
             <span className="text-sm font-medium leading-none">Amount:</span>
             <span className="px-1 py-0.5 text-sm font-medium leading-none flex flex-row">
-              {data.amount} {tokenSymbol}
+              {data.amount}{" "}
+              <span className="ml-1 font-bold">{tokenSymbol}</span>
             </span>
           </p>
           <hr />
@@ -112,9 +132,15 @@ export function TransferConfirm({
             <span className="text-sm font-medium leading-none">
               Estimated Gas Fee:
             </span>
-            <span className="px-1 py-0.5 text-sm font-medium leading-none">
-              Estimating...
-            </span>
+            <Suspense
+              fallback={<TextShimmer width="80px" className="text-sm" />}
+            >
+              <span className="px-1 py-0.5 text-sm font-medium leading-none">
+                {formattedEstimatedGasFee
+                  ? `${formattedEstimatedGasFee} ETH`
+                  : ""}
+              </span>
+            </Suspense>
           </p>
         </div>
         <div className="flex justify-end space-x-2 mt-4">
