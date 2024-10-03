@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { getAccount, simulateContract, writeContract } from "@wagmi/core";
 import { ethers } from "ethers";
 import { sepolia } from "viem/chains";
@@ -51,19 +51,25 @@ export function TransferConfirm({
     args: [data.recipient, parsedAmount],
   });
 
-  const estimateGas = useEstimateGas({
+  // Fetch the estimated gas for the transaction
+  const { data: estimateGas } = useEstimateGas({
     to: BITSO_TOKEN_ADDRESS,
     data: dataField,
     chainId: sepolia.id,
   });
 
+  // Fetch the current gas price
   const { data: gasPriceData } = useGasPrice({
     chainId: sepolia.id,
   });
 
+  // Buffer for the gas fee
+  const buffer = BigInt(12) / BigInt(10);
+
+  // Calculate the estimated gas fee
   const estimatedGasFee =
-    estimateGas.data && gasPriceData
-      ? BigInt(estimateGas.data) * BigInt(gasPriceData)
+    estimateGas && gasPriceData
+      ? BigInt(estimateGas) * BigInt(gasPriceData) * buffer
       : null;
 
   const formattedEstimatedGasFee = estimatedGasFee
