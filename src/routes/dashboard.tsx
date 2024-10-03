@@ -23,12 +23,15 @@ function Dashboard() {
   const { tokenSymbol } = useTokenContext();
   const { formattedBalance, isLoading, queryKey } = useAccountBalance();
 
-  const handleClose = async () => {
-    // Invalidate the balance query to refetch the new balance
-    await queryClient.invalidateQueries({
-      queryKey,
-    });
+  const handleClose = (kind: "cancelFlow" | "endFlow" = "cancelFlow") => {
+    if (kind === "endFlow") {
+      // Invalidate the balance query to refetch the new balance
+      queryClient.refetchQueries({
+        queryKey,
+      });
+    }
     setIsTransferOpen(false);
+    return;
   };
 
   return (

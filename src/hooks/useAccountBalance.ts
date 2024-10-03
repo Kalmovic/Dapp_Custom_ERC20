@@ -9,12 +9,16 @@ export const useAccountBalance = () => {
     data: balance,
     queryKey,
     isSuccess,
-    isLoading,
+    ...rest
   } = useReadContract({
     address: BITSO_TOKEN_ADDRESS,
     abi: tokenAbi,
     functionName: "balanceOf",
     args: [address],
+    query: {
+      // 5s cache
+      staleTime: 5000,
+    },
   });
 
   const formattedBalance =
@@ -24,7 +28,7 @@ export const useAccountBalance = () => {
 
   return {
     formattedBalance,
-    isLoading,
     queryKey,
+    ...rest,
   };
 };

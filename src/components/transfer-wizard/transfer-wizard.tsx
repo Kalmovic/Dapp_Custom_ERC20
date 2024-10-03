@@ -34,7 +34,11 @@ type SuccessState = {
 
 type TransferWizardState = FormState | ConfirmState | SuccessState;
 
-export function TransferWizard({ onClose }: { onClose: () => void }) {
+export function TransferWizard({
+  onClose,
+}: {
+  onClose: (kind: "cancelFlow" | "endFlow") => void;
+}) {
   const [direction, setDirection] = React.useState<number>();
   const [ref, bounds] = useMeasure();
   const [wizardState, setWizardState] = React.useState<TransferWizardState>({
@@ -75,7 +79,7 @@ export function TransferWizard({ onClose }: { onClose: () => void }) {
         return (
           <TransferForm
             data={wizardState.data}
-            onClose={onClose}
+            onClose={() => onClose("cancelFlow")}
             onNext={handleFormData}
           />
         );
@@ -88,7 +92,7 @@ export function TransferWizard({ onClose }: { onClose: () => void }) {
           />
         );
       case TransferWizardSteps.SUCCESS:
-        return <TransferSuccess onClose={onClose} />;
+        return <TransferSuccess onClose={() => onClose("endFlow")} />;
       default:
         const _exhaustiveCheck: never = wizardState;
         throw new Error("Bad state" + _exhaustiveCheck);
