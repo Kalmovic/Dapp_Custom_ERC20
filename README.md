@@ -4,7 +4,7 @@ Crypto Challenge is a decentralized application (dApp) that allows users to view
 
 ## Media
 
-https://github.com/user-attachments/assets/2c245718-28e7-4bd4-852f-e2827d969127
+https://github.com/user-attachments/assets/aae86ec2-38f5-4d18-85aa-97349e42168c
 
 ## Features
 
