@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { ConnectKitButton } from "connectkit";
 import { Navigate, Outlet } from "react-router-dom";

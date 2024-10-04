@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TextShimmer } from "@/components/text-shimmer";
-import { useTokenContext } from "@/context/token-context";
+import { useTokenContext } from "@/context/tokenContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAccountBalance } from "@/hooks/useAccountBalance";
 

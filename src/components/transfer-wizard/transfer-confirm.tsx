@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
-import { useTokenContext } from "@/context/token-context";
+import { useTokenContext } from "@/context/tokenContext";
 import { TextShimmer } from "../text-shimmer";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 

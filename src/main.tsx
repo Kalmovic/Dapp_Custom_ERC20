@@ -8,7 +8,7 @@ import { Login } from "./routes/login.tsx";
 import { ErrorBoundary } from "./components/error-boundary.tsx";
 import { Toaster } from "./components/ui/sonner.tsx";
 import { PrivateRoute } from "./routes/private-route.tsx";
-import { TokenProvider } from "./context/token-context.tsx";
+import { TokenProvider } from "./context/tokenContext.tsx";
 import { TooltipProvider } from "./components/ui/tooltip.tsx";
 
 const router = createBrowserRouter([

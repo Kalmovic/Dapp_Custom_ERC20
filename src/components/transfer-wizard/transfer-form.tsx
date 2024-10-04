@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import * as Yup from "yup";
 import { ethers } from "ethers";
 import { Address } from "viem";
@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAccountBalance } from "@/hooks/useAccountBalance";
-import { useTokenContext } from "@/context/token-context";
+import { useTokenContext } from "@/context/tokenContext";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -93,6 +93,7 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
           <div className="grid gap-1.5">
             <Label htmlFor="recipient">Recipient Address</Label>
             <Input
+              id="recipient"
               type="text"
               placeholder="0x..."
               {...register("recipient")}
@@ -114,6 +115,7 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
           <div className="grid gap-1.5">
             <Label htmlFor="amount">Amount</Label>
             <Input
+              id="amount"
               type="text"
               placeholder="0.00"
               {...register("amount")}
