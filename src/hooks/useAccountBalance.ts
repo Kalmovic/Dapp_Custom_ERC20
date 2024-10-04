@@ -29,6 +29,7 @@ export const useAccountBalance = () => {
   return {
     formattedBalance,
     queryKey,
+    isSuccess,
     ...rest,
   };
 };
