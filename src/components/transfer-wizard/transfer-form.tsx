@@ -31,19 +31,35 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
         ),
       amount: Yup.string()
         .required("Amount is required")
-        .test(
-          "is-positive",
-          "Amount must be a positive number",
-          (value) => !isNaN(Number(value)) && parseFloat(value || "0") > 0
-        )
+        .test("is-valid-amount", "Invalid amount", (value) => {
+          if (value.includes(",")) {
+            // regex to know if the user has entered correct commas places 1,000,000.90
+            const regex = /^\d{1,3}(,\d{3})*(\.\d+)?$/;
+            return regex.test(value);
+          }
+          return !isNaN(Number(value || "0"));
+        })
+        .test("is-positive", "Amount must be a positive number", (value) => {
+          const valueWithoutCommas = value?.replace(/,/g, "");
+          return Number(valueWithoutCommas) > 0;
+        })
         .test(
           "is-less-than-balance",
           "Amount exceeds available balance",
           function (value) {
+            const formattedBalanceWithoutCommas = formattedBalance.replace(
+              /,/g,
+              ""
+            );
+            const valueWithoutCommas = value?.replace(/,/g, "");
+
             if (!formattedBalance) {
-              return true; // Alternatively, return false to enforce validation
+              return true;
             }
-            return parseFloat(value || "0") <= parseFloat(formattedBalance);
+            return (
+              Number(valueWithoutCommas) <=
+              Number(formattedBalanceWithoutCommas)
+            );
           }
         ),
     });
@@ -58,7 +74,7 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
     resolver: yupResolver(schema, {
       context: { availableBalance: formattedBalance },
     }),
-    reValidateMode: "onChange",
+    reValidateMode: "onSubmit",
     shouldFocusError: true,
     defaultValues: {
       amount: data.amount || "",
@@ -68,8 +84,10 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
 
   const onSubmit = (data: { recipient: string; amount: string }) => {
     // just in case the validation on amount fails to check if theres enough balance
+    const formattedBalanceWithoutCommas = formattedBalance.replace(/,/g, "");
+    const valueWithoutCommas = data.amount?.replace(/,/g, "");
     if (
-      parseFloat(data.amount) > parseFloat(formattedBalance) ||
+      Number(valueWithoutCommas) >= Number(formattedBalanceWithoutCommas) ||
       !formattedBalance
     ) {
       setError("amount", {
@@ -78,6 +96,15 @@ export function TransferForm({ data, onClose, onNext }: TransferFormProps) {
       });
       return;
     }
+
+    // We format the value for better readability
+    const formattedAmount = Number(
+      data.amount.replace(/,/g, "")
+    ).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 10,
+    });
+    data.amount = formattedAmount;
     onNext(data);
   };
 

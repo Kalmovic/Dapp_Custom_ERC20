@@ -43,7 +43,9 @@ export function TransferConfirm({
 
   const { tokenSymbol } = useTokenContext();
 
-  const parsedAmount = ethers.parseUnits(data.amount, 18);
+  const ethersUnitsToBeParsed = data.amount.replace(/,/g, "");
+
+  const parsedAmount = ethers.parseUnits(ethersUnitsToBeParsed, 18);
 
   const dataField = encodeFunctionData({
     abi: tokenAbi,
@@ -80,7 +82,7 @@ export function TransferConfirm({
     setFormStatus("loading");
     try {
       const { address } = getAccount(config);
-      const parsedAmount = ethers.parseUnits(data.amount, 18);
+      const parsedAmount = ethers.parseUnits(ethersUnitsToBeParsed, 18);
 
       const { request: txRequest } = await simulateContract(config, {
         address: BITSO_TOKEN_ADDRESS,
